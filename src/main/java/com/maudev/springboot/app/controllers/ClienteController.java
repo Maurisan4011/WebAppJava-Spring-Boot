@@ -65,7 +65,7 @@ public class ClienteController {
 
 		Cliente cliente = clienteService.findOne(id);
 		if (cliente == null) {
-			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
+			flash.addFlashAttribute("error", "El cliente no existe en la base de datos. msj desde backend");
 			return "redirect:/listar";
 		}
 
@@ -105,11 +105,11 @@ public class ClienteController {
 		if (id > 0) {
 			cliente = clienteService.findOne(id);
 			if (cliente == null) {
-				flash.addFlashAttribute("error", "El ID del cliente no existe en la BBDD!");
+				flash.addFlashAttribute("error", "El ID del cliente no existe en la BBDD!msj desde backend");
 				return "redirect:/listar";
 			}
 		} else {
-			flash.addFlashAttribute("error", "El ID del cliente no puede ser cero!");
+			flash.addFlashAttribute("error", "El ID del cliente no puede ser cero!. msj desde backend");
 			return "redirect:/listar";
 		}
 		model.put("cliente", cliente);
@@ -127,8 +127,8 @@ public class ClienteController {
 		}
 
 		if (!foto.isEmpty()) {
-			if (cliente.getId() != null && cliente.getId() > 1 && cliente.getFoto() != null
-					&& cliente.getFoto().length() > 1) {
+			if (cliente.getId() != null && cliente.getId() > 2 && cliente.getFoto() != null
+					&& cliente.getFoto().length() > 2) {
 
 				uploadFileService.delete(cliente.getFoto());
 			}
@@ -141,12 +141,12 @@ public class ClienteController {
 				e.printStackTrace();
 			}
 
-			flash.addFlashAttribute("info", "Has subido correctamente '" + uniqueFilename + "'");
+			flash.addFlashAttribute("info", "Has subido correctamente '" + uniqueFilename + "'" + ". msj desde backend");
 
 			cliente.setFoto(uniqueFilename);
 		}
 
-		String mensajeFlash = (cliente.getId() != null) ? "Cliente editado con éxito!" : "Cliente creado con éxito!";
+		String mensajeFlash = (cliente.getId() != null) ? "Cliente editado con éxito!. msj desde backend" : "Cliente creado con éxito!. msj desde backend";
 
 		clienteService.save(cliente);
 		status.setComplete();
@@ -161,10 +161,10 @@ public class ClienteController {
 			Cliente cliente = clienteService.findOne(id);
 
 			clienteService.delete(id);
-			flash.addFlashAttribute("success", "Cliente eliminado con éxito!");
+			flash.addFlashAttribute("success", "Cliente eliminado con éxito!.msj desde backend");
 
 			if (uploadFileService.delete(cliente.getFoto())) {
-				flash.addFlashAttribute("info", "Foto " + cliente.getFoto() + " eliminada con exito!");
+				flash.addFlashAttribute("info", "Foto " + cliente.getFoto() + " eliminada con exito!msj desde backend");
 			}
 
 		}

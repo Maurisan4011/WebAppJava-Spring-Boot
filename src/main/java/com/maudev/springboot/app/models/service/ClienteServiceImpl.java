@@ -5,13 +5,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.maudev.springboot.app.models.dao.IClienteDao;
+import com.maudev.springboot.app.models.dao.IFacturaDao;
 import com.maudev.springboot.app.models.dao.IProductoDao;
 import com.maudev.springboot.app.models.entity.Cliente;
+import com.maudev.springboot.app.models.entity.Factura;
 import com.maudev.springboot.app.models.entity.Producto;
 
 @Service
@@ -22,6 +24,11 @@ public class ClienteServiceImpl implements IClienteService {
 
 	@Autowired
 	private IProductoDao productoDao;
+	
+	//inyecto factura 
+	@Autowired
+	private IFacturaDao facturaDao;
+	
 
 	@Transactional(readOnly = true)
 	@Override
@@ -66,5 +73,19 @@ public class ClienteServiceImpl implements IClienteService {
 		
 		//usando LikeIgnoreCase
 		return productoDao.findByNombreLikeIgnoreCase("%"+term+"%");
+	}
+
+	@Override
+	@Transactional
+	public void saveFactura(Factura factura) {
+		// TODO Auto-generated method stub
+		facturaDao.save(factura);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Producto finProductoById(Long id) {
+		// TODO Auto-generated method stub
+		return productoDao.findById(id).orElse(null);
 	}
 }

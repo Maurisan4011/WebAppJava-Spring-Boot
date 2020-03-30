@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-
+	//Armando la funcion Para autocomplentarelproducto apatartir de la
+	//lista de productos que tenemos cargado en la base de datos
 	<script type="text/javascript" th:fragment="javascript">
 		$(document).ready(function() {
-
 			$("#buscar_producto").autocomplete({
 
 				source : function(request, response) {
@@ -27,13 +27,106 @@
 					});
 				},
 				select : function(event, ui) {
-					$("#buscar_producto").val(ui.item.label);
+					//$("#buscar_producto").val(ui.item.label);
+					//Preguntamos si el Producto Existe usando la fincion hasProducto del Objeto itemsHelper
+					if(itemsHelper.hasProducto(ui.item.value)){
+						//Si existe el producto incrementamos la cantidad
+						itemsHelper.incrementaCantidad(ui.item.value,ui.item.precio);
+						return false;
+						
+					}
+					
+					
+					//traemos el contenido html que tiene el elemento #plantillaItemsFactura que viene de 
+					//pantila-items.html a traves de id
+					var linea = $("#plantillaItemsFactura").html();
+					//Reemplazamos el parametro id, nombre y precio  por el valor  de que trae Funtioin(item)
+					linea = linea.replace(/{ID}/g, ui.item.value);
+					linea = linea.replace(/{NOMBRE}/g, ui.item.label);
+					linea = linea.replace(/{PRECIO}/g, ui.item.precio);
+
+					//linea se agrega a la tabla Cargar Profuctos , al tbody de la tablas con todos los datos de la funcion
+					//js de Arriba
+					$("#cargarItemProductos tbody").append(linea);
+					itemsHelper.calcularImporte(ui.item.value,ui.item.precio,1);
 
 					return false;
 				}
 
 			});
+			
+			//cuando se envie el formulario , tenemos un eventos 
+			//Si no se elimina, toma el input dela factura y lanza una linea mas error
+			$("form").submit(function(){
+				$("#plantillaItemsFactura").remove();				
+				return;
+			});
 		});
-	</script>
+		 //Objeto con metodos utiles de ayuda como ser : calcular total importe , eliminar una linea , incrementar cantidad
+		var itemsHelper = {
+				 //Metodo que calcula el importe
+				 calcularImporte: function(id,precio,cantidad){
+					 //de esta forma podemas cambiar el calcular  total por medio del id que retorna 
+					 $("#total_importe_"+ id).html(parseInt(precio) * parseInt(cantidad));
+					 
+					 //Por cada vuelta con ingreso de id se vuelve a calcula el gran total 
+					 this.calcularGranTotal();
+					 
+				 },
+				 //MEtodo que Se encarga de Buscar linea por linea en detalle de factura si existe el producto 
+				 hasProducto: function(id){
+					 //hacemos referencia al elemento input de plantilla-items por cada input que contenga el nombre 
+					 
+					 var resultado = false;
+					 
+					 $('input[name="item_id[]"]').each(function(){
+						 //preguntamos si el id que se pasa por el argumento es igual al valor 
+						if(parseInt(id) == parseInt($(this).val())){
+						
+							resultado = true;
+						}	 
+						 
+					 });
+						 
+					 return resultado;
+				 },
+				 
+				 //Metodo que permite incrementar la cantidad del producto existente en el formulario 
+				 incrementaCantidad: function (id, precio){
+						//validamos si la cantidad tiene un valor numerico , si tiene cantidad se convierte en integer
+						//para pasar a cantida , de lo contrario mostramos un 0
+					 var cantidad = $("#cantidad_" + id).val()? parseInt($("#cantidad_" + id).val()) :0;
+						//incrementamos la cantidad y se la volvemos a psar al input cantidad					 
+					 $("#cantidad_" + id).val(++cantidad)
+					 //Actualizamos el importe Total  por cada actualizacion de cantidad ,se tiene que actualizar el importe
+					 this.calcularImporte(id,precio,cantidad);
+				 },
+				 
+				 //Metodo para eliminar linea de Factura 
+				 eliminarLineaFactura: function(id){
+					 //Hacemos referencia al id de la Plantilla SIEMPRE!!
+					 $("#row_" + id).remove();
+					 
+					 //Por cada Eliminacion de id se vuelve a calcula el gran total llamando a la funcion
+					 this.calcularGranTotal();
+				 },
+				 
+				 //Metodo para calcular el valor total de la factura 
+				 calcularGranTotal: function(){
+					 var total = 0;
+					 //jquery recorrecmo un each,  por cada span que contenga como id total importe 
+					 //id ^ caracter especial para que busque en todos los span donde el id contenga total_importe_
+					 $('span[id^="total_importe_"]').each(function(){
+						 
+						total += parseInt($(this).html()); 
+					 });
+					 
+					 $('#gran_total').html(total);
+					 
+				 }
+				 
+		 }
+		
+		</script>
 </body>
 </html>
