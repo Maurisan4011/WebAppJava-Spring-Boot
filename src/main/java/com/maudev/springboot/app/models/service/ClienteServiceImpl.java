@@ -88,4 +88,11 @@ public class ClienteServiceImpl implements IClienteService {
 		// TODO Auto-generated method stub
 		return productoDao.findById(id).orElse(null);
 	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Factura findFacturaById(Long id) {
+		// TODO Auto-generated method stub
+		return facturaDao.findById(id).orElse(null);
+	}
 }

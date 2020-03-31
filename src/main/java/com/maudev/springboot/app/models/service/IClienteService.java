@@ -22,11 +22,13 @@ public interface IClienteService {
 	public void delete(Long id);
 
 	public List<Producto> finByNombre(String term);
-	
-	
+
 	public void saveFactura(Factura factura);
-	
-	//MEtodo en el contrato para buscar el Producto por iD
+
+	// MEtodo en el contrato para buscar el Producto por iD
 	public Producto finProductoById(Long id);
-	
+
+//DEtalle factua
+	public Factura findFacturaById(Long id);
+
 }

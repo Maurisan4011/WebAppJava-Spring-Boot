@@ -38,7 +38,32 @@ public class FacturaController {
 
 	// Debug de la cantidad y el ID usamos el
 	private final Logger log = LoggerFactory.getLogger(getClass());
-
+	
+	//Pticion detalle 
+	@GetMapping("/ver/{id}")
+	public String ver(@PathVariable(value = "id") Long id,
+			Model model,
+			RedirectAttributes flash) {
+		
+		//Obtenemos la factuura por id
+		Factura factura = clienteService.findFacturaById(id);
+		
+		//verificar si no esta vacia 
+		if (factura == null) {
+			flash.addFlashAttribute("error", "La factura no existe en base de datos!. msj desde backend");
+			 return"redirect:/listar";
+		}
+		
+		//Si todo esta bien pasamos factura a vista 
+		
+		model.addAttribute("factura", factura);
+		model.addAttribute("titulo", "Factura :  ".concat(factura.getDescripcion()));
+		
+		return "factura/ver";
+		
+	}
+	
+	
 	@GetMapping("/form/{clienteId}")
 	public String crear(@PathVariable(value = "clienteId") Long clienteId, Map<String, Object> model,
 			RedirectAttributes flash) {
