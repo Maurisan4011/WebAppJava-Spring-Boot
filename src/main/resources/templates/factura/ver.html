@@ -31,16 +31,19 @@
 					<li class="list-group-item"
 						th:text="'Fecha  :'+${factura.createAt}"></li>
 				</ul>
-				<div class="alert alert-indo my-4" th:if="${#lists.isEmpty(factura.items)}" th:text="'no existen lineaspara la factura' + ${factura.descripcion}" ></div>
-				<table th:if="${not #lists.isEmpty(factura.items)}" class="table table-striped table-hover table-bordered my-3">
+				<div class="alert alert-info my-4"
+					th:if="${#lists.isEmpty(factura.items)}"
+					th:text="'no existen lineaspara la factura' + ${factura.descripcion}"></div>
+				<table th:if="${not #lists.isEmpty(factura.items)}"
+					class="table table-striped table-hover table-bordered my-3">
 					<thead>
-					<tr>
-					<th>Producto</th>
-					<th>Precio</th>
-					<th>Cantidad</th>
-					<th>Total</th>			
-					</tr>
-				</thead>
+						<tr>
+							<th>Producto</th>
+							<th>Precio</th>
+							<th>Cantidad</th>
+							<th>Total</th>
+						</tr>
+					</thead>
 
 					<tbody>
 						<tr th:each="linea: ${factura.items}">
@@ -51,7 +54,23 @@
 						</tr>
 					</tbody>
 				</table>
-				<h5 class="float-right">Gran Total<span th:text="${factura.total}" class="badge badge-secondary"></span></h5>
+				<h5 class="float-right">
+					Gran Total<span th:text="${factura.total}"
+						class="badge badge-secondary"></span>
+				</h5>
+
+				<div class="card border-info mb-4" style="max-width: 20rem;">
+					<div class="card-header">Observaciones</div>
+					<div class="card-body">
+						<p class="card-text" th:text="${factura.observacion}"
+							th:if="${not #strings.isEmpty(factura.observacion)}"></p>
+						<h4 class="card-title"
+							th:if="${#strings.isEmpty(factura.observacion)}"
+							th:text="'No tiene observaciones'"></h4>
+					</div>
+				</div>
+				<a th:href="@{'/ver/'+ ${factura.cliente.id}}"
+					class="btn btn-outline-primary btn-xs">&laquo; VOLVER</a>
 
 			</div>
 		</div>

@@ -127,8 +127,8 @@ public class ClienteController {
 		}
 
 		if (!foto.isEmpty()) {
-			if (cliente.getId() != null && cliente.getId() > 2 && cliente.getFoto() != null
-					&& cliente.getFoto().length() > 2) {
+			if (cliente.getId() != null && cliente.getId() > 1 && cliente.getFoto() != null
+					&& cliente.getFoto().length() > 1) {
 
 				uploadFileService.delete(cliente.getFoto());
 			}
@@ -166,7 +166,7 @@ public class ClienteController {
 			if (uploadFileService.delete(cliente.getFoto())) {
 				flash.addFlashAttribute("info", "Foto " + cliente.getFoto() + " eliminada con exito!msj desde backend");
 			}
-
+			
 		}
 		return "redirect:/listar";
 	}

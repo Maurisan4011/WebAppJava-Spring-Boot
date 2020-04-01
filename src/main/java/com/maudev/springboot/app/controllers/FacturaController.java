@@ -38,32 +38,29 @@ public class FacturaController {
 
 	// Debug de la cantidad y el ID usamos el
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	
-	//Pticion detalle 
+
+	// Pticion detalle
 	@GetMapping("/ver/{id}")
-	public String ver(@PathVariable(value = "id") Long id,
-			Model model,
-			RedirectAttributes flash) {
-		
-		//Obtenemos la factuura por id
+	public String ver(@PathVariable(value = "id") Long id, Model model, RedirectAttributes flash) {
+
+		// Obtenemos la factuura por id
 		Factura factura = clienteService.findFacturaById(id);
-		
-		//verificar si no esta vacia 
+
+		// verificar si no esta vacia
 		if (factura == null) {
 			flash.addFlashAttribute("error", "La factura no existe en base de datos!. msj desde backend");
-			 return"redirect:/listar";
+			return "redirect:/listar";
 		}
-		
-		//Si todo esta bien pasamos factura a vista 
-		
+
+		// Si todo esta bien pasamos factura a vista
+
 		model.addAttribute("factura", factura);
 		model.addAttribute("titulo", "Factura :  ".concat(factura.getDescripcion()));
-		
+
 		return "factura/ver";
-		
+
 	}
-	
-	
+
 	@GetMapping("/form/{clienteId}")
 	public String crear(@PathVariable(value = "clienteId") Long clienteId, Map<String, Object> model,
 			RedirectAttributes flash) {
@@ -93,25 +90,26 @@ public class FacturaController {
 	}
 
 	@PostMapping("/form")
-	//@Valid habilita la validacion en el objeto factura de manera autometica
-	//BindingResult comprueba errores en la validacion de la factura
-	public String guardar(@Valid Factura factura,BindingResult result,Model model ,@RequestParam(name = "item_id[]", required = false) Long[] itemId,
-			@RequestParam(name = "cantidad[]", required = false) Integer[] cantidad, RedirectAttributes flash, SessionStatus status) {
+	// @Valid habilita la validacion en el objeto factura de manera autometica
+	// BindingResult comprueba errores en la validacion de la factura
+	public String guardar(@Valid Factura factura, BindingResult result, Model model,
+			@RequestParam(name = "item_id[]", required = false) Long[] itemId,
+			@RequestParam(name = "cantidad[]", required = false) Integer[] cantidad, RedirectAttributes flash,
+			SessionStatus status) {
 		// va a recibir el objeto que esta mapeado al formulario
 		// y a su ves tambien algunos parametros del request que tienen la vista
 		// plantilla-items
 		// item_id[] y tambien cantidad[]
-		
-		
+
 		if (result.hasErrors()) {
-			model.addAttribute("titulo","Crear Factura");
+			model.addAttribute("titulo", "Crear Factura");
 			return "factura/form";
-			
+
 		}
-		
+
 		if (itemId == null || itemId.length == 0) {
-			model.addAttribute("titulo","Crear Factura");
-			model.addAttribute("error","Error: La Factura NO puede no tener lineas!!");
+			model.addAttribute("titulo", "Crear Factura");
+			model.addAttribute("error", "Error: La Factura NO puede no tener lineas!!");
 			return "factura/form";
 		}
 		for (int i = 0; i < itemId.length; i++) {
@@ -124,11 +122,27 @@ public class FacturaController {
 
 			log.info("ID: " + itemId[i].toString() + ", Cantidad:  " + cantidad[i].toString());
 		}
-		//Guardar la factura en la base de datos
-		
+		// Guardar la factura en la base de datos
+
 		clienteService.saveFactura(factura);
 		status.setComplete();
 		flash.addFlashAttribute("success", "Factura Creada con éxito!! msj desde backend");
 		return "redirect:/ver/" + factura.getCliente().getId();
 	}
+
+	@GetMapping("/eliminar/{id}")
+	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+
+		Factura factura = clienteService.findFacturaById(id);
+
+		if (factura != null) {
+			clienteService.deleteFactura(id);
+			flash.addFlashAttribute("success", "Factura eliminada con éxito!. Msj desde Backend");
+			return "redirect:/ver/" + factura.getCliente().getId();
+		}
+
+		flash.addFlashAttribute("error", "La Factura no existe en la base de datos, no se pudo eliminar!. Msj desde Backend");
+		return "redirect:/listar";
+	}
+
 }

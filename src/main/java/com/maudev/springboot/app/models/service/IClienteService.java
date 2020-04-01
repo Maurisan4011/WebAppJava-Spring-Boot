@@ -28,7 +28,9 @@ public interface IClienteService {
 	// MEtodo en el contrato para buscar el Producto por iD
 	public Producto finProductoById(Long id);
 
-//DEtalle factua
+	//DEtalle factua
 	public Factura findFacturaById(Long id);
+	
+	public void deleteFactura(Long id);
 
 }
