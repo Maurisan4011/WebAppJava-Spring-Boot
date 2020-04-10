@@ -44,7 +44,8 @@ public class FacturaController {
 	public String ver(@PathVariable(value = "id") Long id, Model model, RedirectAttributes flash) {
 
 		// Obtenemos la factuura por id
-		Factura factura = clienteService.findFacturaById(id);
+		Factura factura = clienteService.fetchFacturaByIdWithClienteWithItemFacturaWithProducto(id);
+		//clienteService.findFacturaById(id);
 
 		// verificar si no esta vacia
 		if (factura == null) {
