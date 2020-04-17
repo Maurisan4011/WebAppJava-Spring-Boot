@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+//import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,8 +36,16 @@ import com.maudev.springboot.app.models.service.IClienteService;
 import com.maudev.springboot.app.models.service.IUploadFileService;
 import com.maudev.springboot.app.util.paginator.PageRender;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @Controller
+//@RestController
 @SessionAttributes("cliente")
+@Api(tags = "cliente")
 public class ClienteController {
 
 	@Autowired
@@ -63,7 +72,7 @@ public class ClienteController {
 	@GetMapping(value = "/ver/{id}")
 	public String ver(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash) {
 
-		Cliente cliente = clienteService.fetchByIdWithFacturas(id);  //findOne(id);
+		Cliente cliente = clienteService.fetchByIdWithFacturas(id); // findOne(id);
 		if (cliente == null) {
 			flash.addFlashAttribute("error", "El cliente no existe en la base de datos. msj desde backend");
 			return "redirect:/listar";
@@ -74,7 +83,9 @@ public class ClienteController {
 		return "ver";
 	}
 
-	@RequestMapping(value = {"/listar", "/"}, method = RequestMethod.GET)
+	@ApiOperation(value = "listar", notes = "Listas de Clientes")
+	@GetMapping(value= {"/listar", "/"}	)
+	// @RequestMapping(value = {"/listar", "/"}, method = RequestMethod.GET)
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
 
 		Pageable pageRequest = PageRequest.of(page, 10);
@@ -97,8 +108,15 @@ public class ClienteController {
 		return "form";
 	}
 
+	@ApiOperation(value = "formulario", notes = "Formulario de Cliente")
 	@RequestMapping(value = "/form/{id}")
-	public String editar(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash) {
+	public String editar(
+			@ApiParam(name = "id", type = "Long", value = "id",
+			example = "1",
+			required = true)
+			@PathVariable(value = "id") Long id,
+			Map<String, Object> model,
+			RedirectAttributes flash) {
 
 		Cliente cliente = null;
 
@@ -117,6 +135,8 @@ public class ClienteController {
 		return "form";
 	}
 
+	@ApiOperation(value = "guardar", notes = "Guardar nuevo cliente	")
+	@ApiResponses(value = { @ApiResponse(code = 201, message = "cliente guardado") })
 	@RequestMapping(value = "/form", method = RequestMethod.POST)
 	public String guardar(@Valid Cliente cliente, BindingResult result, Model model,
 			@RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
@@ -141,12 +161,14 @@ public class ClienteController {
 				e.printStackTrace();
 			}
 
-			flash.addFlashAttribute("info", "Has subido correctamente '" + uniqueFilename + "'" + ". msj desde backend");
+			flash.addFlashAttribute("info",
+					"Has subido correctamente '" + uniqueFilename + "'" + ". msj desde backend");
 
 			cliente.setFoto(uniqueFilename);
 		}
 
-		String mensajeFlash = (cliente.getId() != null) ? "Cliente editado con éxito!. msj desde backend" : "Cliente creado con éxito!. msj desde backend";
+		String mensajeFlash = (cliente.getId() != null) ? "Cliente editado con éxito!. msj desde backend"
+				: "Cliente creado con éxito!. msj desde backend";
 
 		clienteService.save(cliente);
 		status.setComplete();
@@ -166,9 +188,9 @@ public class ClienteController {
 			if (uploadFileService.delete(cliente.getFoto())) {
 				flash.addFlashAttribute("info", "Foto " + cliente.getFoto() + " eliminada con exito!msj desde backend");
 			}
-			
+
 		}
 		return "redirect:/listar";
 	}
-	
+
 }

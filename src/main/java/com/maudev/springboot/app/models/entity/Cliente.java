@@ -23,11 +23,15 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 //para crear tabla 
 @Table(name = "clientes")
+@ApiModel("Entity cliente")
 public class Cliente implements Serializable {
-
+	
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -35,12 +39,15 @@ public class Cliente implements Serializable {
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(value = "Es el ID CLiente", required = true, example = "2")
 	private Long id;
 
 	@NotEmpty
+	@ApiModelProperty(value = "Es el nombre del CLiente", required = true, example = "juan")
 	private String nombre;
 
 	@NotEmpty
+	@ApiModelProperty(value = "Es el apellido del CLiente", required = true, example = "Sanchez")
 	private String apellido;
 
 	@NotEmpty

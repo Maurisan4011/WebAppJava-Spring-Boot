@@ -27,9 +27,13 @@ import com.maudev.springboot.app.models.entity.ItemFactura;
 import com.maudev.springboot.app.models.entity.Producto;
 import com.maudev.springboot.app.models.service.IClienteService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @Controller
 @RequestMapping("/factura")
 @SessionAttributes("factura")
+@Api(value = "Servicio Rest para informacion de Facturas")
 public class FacturaController {
 
 	@Autowired // inyectamos
@@ -40,6 +44,7 @@ public class FacturaController {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	// Pticion detalle
+	@ApiOperation("Retorna detalle De la factura por id")
 	@GetMapping("/ver/{id}")
 	public String ver(@PathVariable(value = "id") Long id, Model model, RedirectAttributes flash) {
 
@@ -61,7 +66,8 @@ public class FacturaController {
 		return "factura/ver";
 
 	}
-
+	
+	@ApiOperation("Crear nueva factura por ID del cliente")
 	@GetMapping("/form/{clienteId}")
 	public String crear(@PathVariable(value = "clienteId") Long clienteId, Map<String, Object> model,
 			RedirectAttributes flash) {
@@ -84,6 +90,8 @@ public class FacturaController {
 	// resultado
 	// que se retorna y json lo poble y los registra dentro del body de la respueta
 
+	
+	@ApiOperation("Retorna Lista de Productos")
 	@GetMapping(value = "/cargar-productos/{term}", produces = { "application/json" })
 	public @ResponseBody List<Producto> cargarProductos(@PathVariable String term) {
 		return clienteService.finByNombre(term);
@@ -93,6 +101,7 @@ public class FacturaController {
 	@PostMapping("/form")
 	// @Valid habilita la validacion en el objeto factura de manera autometica
 	// BindingResult comprueba errores en la validacion de la factura
+	@ApiOperation("Guarda la nueva factura con todos los datos llenados en el fromulario")
 	public String guardar(@Valid Factura factura, BindingResult result, Model model,
 			@RequestParam(name = "item_id[]", required = false) Long[] itemId,
 			@RequestParam(name = "cantidad[]", required = false) Integer[] cantidad, RedirectAttributes flash,
@@ -130,7 +139,7 @@ public class FacturaController {
 		flash.addFlashAttribute("success", "Factura Creada con éxito!! msj desde backend");
 		return "redirect:/ver/" + factura.getCliente().getId();
 	}
-
+	@ApiOperation("Elimina 1 factura por id de la factura ")
 	@GetMapping("/eliminar/{id}")
 	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 

@@ -19,7 +19,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "productos")
 public class Producto implements Serializable {
 
-	@Id
+	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
