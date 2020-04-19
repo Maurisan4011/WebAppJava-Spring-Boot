@@ -84,6 +84,16 @@ INSERT INTO facturas_items( cantidad, factura_id, producto_id)VALUES(5, 2, 1);
 INSERT INTO facturas_items( cantidad, factura_id, producto_id)VALUES(1, 2, 3);
 INSERT INTO facturas_items( cantidad, factura_id, producto_id)VALUES(4, 2, 4);
 
+/* Creamos usuarios con sus roles  */
+
+INSERT INTO `users` (username, password,enabled) VALUES ('mauricio','$2a$10$044wSqYR55dlPGhjuvV0zOLCF.x.QNlQrMhUc0PsqilvnHYBKq.F6',1);
+INSERT INTO `users` (username, password,enabled) VALUES ('admin', '$2a$10$j2cXKC0glWnof1WkwmPnw.xXDMsRuROKnqyTpwrcvTSQGBeux9gtq',1);
+
+
+INSERT INTO `authorities` (user_id, authority) VALUES (1, 'ROLE_USER');
+INSERT INTO `authorities` (user_id, authority) VALUES (2, 'ROLE_USER');
+INSERT INTO `authorities` (user_id, authority) VALUES (2, 'ROLE_ADMIN');
+
 
 
 
