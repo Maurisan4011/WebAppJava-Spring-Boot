@@ -34,7 +34,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.authorizeRequests().antMatchers("/", "/css/**", "/js/**", "/images/**", "/listar").permitAll()
+		http.authorizeRequests().antMatchers("/", "/css/**", "/js/**", "/images/**", "/listar", "/locale").permitAll()
 				/*
 				 * .antMatchers("/ver/**").hasAnyRole("USER") //ojo este esta como admin si
 				 * pincha a futuro
@@ -43,7 +43,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				/* .antMatchers("/form/**").hasAnyRole("ADMIN") */
 				/* .antMatchers("/eliminar/**").hasAnyRole("ADMIN") */
 				/* .antMatchers("/factura/**").hasAnyRole("ADMIN") */
-				.anyRequest().authenticated().and().formLogin().successHandler(successHandler).loginPage("/login")
+				.anyRequest()
+				.authenticated()
+				.and().formLogin()
+				.successHandler(successHandler).loginPage("/login")
 				.permitAll().and().logout().permitAll().and().exceptionHandling().accessDeniedPage("/error_403");
 	}
 
