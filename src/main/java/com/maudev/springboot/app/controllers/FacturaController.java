@@ -71,8 +71,7 @@ public class FacturaController {
 		model.addAttribute("titulo", String.format(messageSource.getMessage("text.factura.ver.titulo", null, locale), factura.getDescripcion()));
 		return "factura/ver";
 	}
-
-	}	
+	
 	@ApiOperation("Crear nueva factura por ID del cliente")
 	@GetMapping("/form/{clienteId}")
 	public String crear(@PathVariable(value = "clienteId") Long clienteId, Map<String, Object> model,
