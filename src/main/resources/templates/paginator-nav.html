@@ -12,10 +12,6 @@
                 <a class="page-link" th:if="${page.hasPrevius}" th:href="@{${page.url}(page=${page.paginaActual-2})}" th:utext="#{text.paginator.previus}">&laquo;</a></li>
 
 
-            <li class="page-item" th:each="item : ${page.paginas}" th:class="${item.actual?'page-item active': 'page-item'}"><span class="page-link" th:if="${item.actual}" th:text="${item.numero}"></span>
-                <a class="page-link" th:if="${not item.actual}" th:text="${item.numero}" th:href="@{${page.url}(page=${item.numero-1})}"></a>
-            </li>
-
             <li class="page-item" th:each="item : ${page.paginas}" th:class="${item.actual? 'page-item active': 'page-item'}">
                 <span class="page-link" th:if="${item.actual}" th:text="${item.numero}"></span>
                 <a class="page-link" th:if="${not item.actual}" th:href="@{${page.url}(page=${item.numero-1})}" th:text="${item.numero}"></a>
