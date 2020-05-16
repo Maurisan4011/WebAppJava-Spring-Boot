@@ -15,7 +15,10 @@
 
 				<h4 class="card-title">
 					<a th:href="@{'/ver/' + ${factura.cliente.id}}"
-						class="btn btn-light btn-xs" th:utext="#{text.global.volver}">&laquo; volver</a>
+						class="btn btn-light btn-xs" th:utext="#{text.global.volver}">&laquo;
+						volver</a>
+				  <a class="btn btn-danger btn-xs float-right"
+						th:href="@{'/factura/ver/' + ${factura.id}(format=pdf)}">exportar a PDF</a>
 				</h4>
 
 				<ul class="list-group my-2">
@@ -28,7 +31,8 @@
 				<ul class="list-group my-2">
 					<li class="list-group-item list-group-item-success"
 						th:text="#{text.factura.ver.datos.factura}"></li>
-					<li class="list-group-item" th:text="#{text.cliente.factura.folio} + ': ' + ${factura.id}"></li>
+					<li class="list-group-item"
+						th:text="#{text.cliente.factura.folio} + ': ' + ${factura.id}"></li>
 					<li class="list-group-item"
 						th:text="#{text.cliente.factura.descripcion} + ': ' + ${factura.descripcion}"></li>
 					<li class="list-group-item"
@@ -61,8 +65,8 @@
 				</table>
 
 				<h5 class="float-right">
-					<span th:text="#{text.factura.form.total}">Gran Total</span>: <span th:text="${factura.total}"
-						class="badge badge-secondary"></span>
+					<span th:text="#{text.factura.form.total}">Gran Total</span>: <span
+						th:text="${factura.total}" class="badge badge-secondary"></span>
 				</h5>
 
 				<div class="card border-info mb-4" style="max-width: 20rem;">
@@ -77,7 +81,8 @@
 				</div>
 
 				<a th:href="@{'/ver/' + ${factura.cliente.id}}"
-					class="btn btn-light btn-xs" th:utext="#{text.global.volver}">&laquo; volver</a>
+					class="btn btn-light btn-xs" th:utext="#{text.global.volver}">&laquo;
+					volver</a>
 
 			</div>
 		</div>
