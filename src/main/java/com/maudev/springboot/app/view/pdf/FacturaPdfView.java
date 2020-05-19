@@ -35,6 +35,7 @@ public class FacturaPdfView extends AbstractPdfView {
 	protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+		//Obtenemos el model "factura" tiene que se igual al nombre declarado en el controller 
 		Factura factura = (Factura) model.get("factura");
 		
 		//una forma de  traducir  usando 
@@ -63,7 +64,7 @@ public class FacturaPdfView extends AbstractPdfView {
 
 		PdfPTable tabla2 = new PdfPTable(1);
 		tabla2.setSpacingAfter(20);
-		//Otra forma de  traducir  usando  MessageSourceAccessor mensajes = getMessageSourceAccessor();
+	
 		
 		//una forma de  traducir  usando  Locale locale = localeResolver.resolveLocale(request);
 		cell = new PdfPCell(new Phrase(messageSource.getMessage("text.factura.ver.datos.factura", null, locale)));
