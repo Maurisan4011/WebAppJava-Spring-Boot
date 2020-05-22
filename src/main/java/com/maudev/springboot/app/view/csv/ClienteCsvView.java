@@ -14,8 +14,9 @@ import org.supercsv.prefs.CsvPreference;
 
 import com.maudev.springboot.app.models.entity.Cliente;
 
-@Component("listar")
+@Component("listar.csv")
 public class ClienteCsvView extends AbstractView {
+	
 
 	// Base del archivo plano csv
 	public ClienteCsvView() {
@@ -32,7 +33,7 @@ public class ClienteCsvView extends AbstractView {
 	// Base del archivo plano csv
 	@Override
 	@SuppressWarnings("unchecked")
-	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
+	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest requ2est,
 			HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 
@@ -50,6 +51,7 @@ public class ClienteCsvView extends AbstractView {
 		// crear un arreglo de string de la clase que se va a convertir
 
 		String[] header = { "id", "nombre", "apellido", "email", "createAt" };
+		
 		beanWriter.writeHeader(header);
 
 		for (Cliente cliente : clientes) {
