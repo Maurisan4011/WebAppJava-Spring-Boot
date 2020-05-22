@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -42,6 +43,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
 		return localeResolver;
 	}
+
 	/*
 	 * Interceptor que se encarga de cambiar o modificar el lenguaje cada que le
 	 * pasemos lang por url
@@ -59,8 +61,20 @@ public class MvcConfig implements WebMvcConfigurer {
 		// TODO Auto-generated method stub
 		registry.addInterceptor(localeChangeInterceptor());
 	}
+	//bean para manejar los xml  y la vista 
+	@Bean
+	public Jaxb2Marshaller jaxb2Marshaller() {
+		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+		//agregamos la clase root de nuestro documento xml, contiene el listado la lista de todos los elementos de cliente
+		marshaller.setClassesToBeBound(new Class[] {com.maudev.springboot.app.view.xml.ClienteList.class});
+
+		return marshaller;
+	}
 
 }
+
+
+
 
 // debuugear
 //private final Logger log = LoggerFactory.getLogger(getClass());

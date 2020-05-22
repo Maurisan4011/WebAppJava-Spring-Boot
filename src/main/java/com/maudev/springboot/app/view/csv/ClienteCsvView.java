@@ -20,6 +20,7 @@ public class ClienteCsvView extends AbstractView {
 
 	// Base del archivo plano csv
 	public ClienteCsvView() {
+		
 		setContentType("text/csv");
 	}
 
