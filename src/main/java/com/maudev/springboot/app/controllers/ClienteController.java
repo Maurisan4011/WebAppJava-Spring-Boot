@@ -17,7 +17,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +38,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 //import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
@@ -49,6 +49,7 @@ import com.maudev.springboot.app.models.entity.Cliente;
 import com.maudev.springboot.app.models.service.IClienteService;
 import com.maudev.springboot.app.models.service.IUploadFileService;
 import com.maudev.springboot.app.util.paginator.PageRender;
+import com.maudev.springboot.app.view.xml.ClienteList;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -69,11 +70,11 @@ public class ClienteController {
 
 	@Autowired
 	private IUploadFileService uploadFileService;
-	
+
 	@Autowired
 	private MessageSource messageSource;
 
-	@Secured({"ROLE_USER"})
+	@Secured({ "ROLE_USER" })
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
 
@@ -90,11 +91,13 @@ public class ClienteController {
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
 				.body(recurso);
 	}
-    //Otra manera de validar el rol
+
+	// Otra manera de validar el rol
 //	@Secured("ROLE_USER")
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping(value = "/ver/{id}")
-	public String ver(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash, Locale locale) {
+	public String ver(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash,
+			Locale locale) {
 
 		Cliente cliente = clienteService.fetchByIdWithFacturas(id); // findOne(id);
 		if (cliente == null) {
@@ -103,17 +106,21 @@ public class ClienteController {
 		}
 
 		model.put("cliente", cliente);
-		model.put("titulo", messageSource.getMessage("text.cliente.detalle.titulo", null, locale).concat(": ").concat(cliente.getNombre()));
+		model.put("titulo", messageSource.getMessage("text.cliente.detalle.titulo", null, locale).concat(": ")
+				.concat(cliente.getNombre()));
 		return "ver";
 	}
 
+	@GetMapping(value = "listar-rest")
+	public @ResponseBody ClienteList listarRest() {
+		return new ClienteList(clienteService.findAll());
+	}
+
 	@ApiOperation(value = "listar", notes = "Listas de Clientes")
-	//@GetMapping(value = { "/listar", "/" })
-	@RequestMapping(value = {"/listar", "/"}, method = RequestMethod.GET)
+	// @GetMapping(value = { "/listar", "/" })
+	@RequestMapping(value = { "/listar", "/" }, method = RequestMethod.GET)
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
-			Authentication authentication,
-			HttpServletRequest request,
-			Locale locale) {
+			Authentication authentication, HttpServletRequest request, Locale locale) {
 
 		if (authentication != null) {
 			logger.info("Hola Usuario autenticado , tu username es: ".concat(authentication.getName()));
@@ -122,34 +129,41 @@ public class ClienteController {
 		// Ejemplo de forma estatica
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-		if(auth != null) {
-			logger.info("Utilizando forma estática SecurityContextHolder.getContext().getAuthentication(): Usuario autenticado: ".concat(auth.getName()));
+		if (auth != null) {
+			logger.info(
+					"Utilizando forma estática SecurityContextHolder.getContext().getAuthentication(): Usuario autenticado: "
+							.concat(auth.getName()));
 		}
 
-		if(hasRole("ROLE_ADMIN")) {
+		if (hasRole("ROLE_ADMIN")) {
 			logger.info("Hola ".concat(auth.getName()).concat("Tenes Acceso!!"));
 		} else {
 			logger.info("Hola  ".concat(auth.getName()).concat(" NO Tenes Acceso!!"));
 		}
-		
-		//Otra manera 
-		SecurityContextHolderAwareRequestWrapper securityContext = new SecurityContextHolderAwareRequestWrapper(request, "");
-		
+
+		// Otra manera
+		SecurityContextHolderAwareRequestWrapper securityContext = new SecurityContextHolderAwareRequestWrapper(request,
+				"");
+
 		if (securityContext.isUserInRole("ROLE_ADMIN")) {
-			logger.info("FORMA USANDO SecurityContextHolderAwareRequestWrapper: Hola  ".concat(auth.getName()).concat("Tenes Acceso!!"));
-		}else {
-			
-			logger.info("FORMA USANDO SecurityContextHolderAwareRequestWrapper: Hola  ".concat(auth.getName()).concat(" NO Tenes Acceso!!"));
+			logger.info("FORMA USANDO SecurityContextHolderAwareRequestWrapper: Hola  ".concat(auth.getName())
+					.concat("Tenes Acceso!!"));
+		} else {
+
+			logger.info("FORMA USANDO SecurityContextHolderAwareRequestWrapper: Hola  ".concat(auth.getName())
+					.concat(" NO Tenes Acceso!!"));
 		}
 
-		//Otra manera 
+		// Otra manera
 		if (request.isUserInRole("ROLE_ADMIN")) {
-			logger.info("FORMA USANDO HttpServletRequest nativo: Hola  ".concat(auth.getName()).concat("Tenes Acceso!!"));
-		}else {
-			
-			logger.info("FORMA USANDO HttpServletRequest nativo: Hola  ".concat(auth.getName()).concat(" NO Tenes Acceso!!"));
+			logger.info(
+					"FORMA USANDO HttpServletRequest nativo: Hola  ".concat(auth.getName()).concat("Tenes Acceso!!"));
+		} else {
+
+			logger.info("FORMA USANDO HttpServletRequest nativo: Hola  ".concat(auth.getName())
+					.concat(" NO Tenes Acceso!!"));
 		}
-		
+
 		Pageable pageRequest = PageRequest.of(page, 10);
 
 		Page<Cliente> clientes = clienteService.findAll(pageRequest);
@@ -171,7 +185,7 @@ public class ClienteController {
 		return "form";
 	}
 
-	/*	@Secured("ROLE_ADMIN")OTRA MANERA DE VALIDAR EL ROL */
+	/* @Secured("ROLE_ADMIN")OTRA MANERA DE VALIDAR EL ROL */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@ApiOperation(value = "formulario", notes = "Formulario de Cliente")
 	@RequestMapping(value = "/form/{id}")
@@ -224,13 +238,17 @@ public class ClienteController {
 				e.printStackTrace();
 			}
 
-			flash.addFlashAttribute("info", messageSource.getMessage("text.cliente.flash.foto.subir.success", null, locale) + "'" + uniqueFilename + "'");
+			flash.addFlashAttribute("info",
+					messageSource.getMessage("text.cliente.flash.foto.subir.success", null, locale) + "'"
+							+ uniqueFilename + "'");
 
 			cliente.setFoto(uniqueFilename);
 
 		}
 
-		String mensajeFlash = (cliente.getId() != null) ? messageSource.getMessage("text.cliente.flash.editar.success", null, locale) : messageSource.getMessage("text.cliente.flash.crear.success", null, locale);
+		String mensajeFlash = (cliente.getId() != null)
+				? messageSource.getMessage("text.cliente.flash.editar.success", null, locale)
+				: messageSource.getMessage("text.cliente.flash.crear.success", null, locale);
 
 		clienteService.save(cliente);
 		status.setComplete();
@@ -246,10 +264,13 @@ public class ClienteController {
 			Cliente cliente = clienteService.findOne(id);
 
 			clienteService.delete(id);
-			flash.addFlashAttribute("success", messageSource.getMessage("text.cliente.flash.eliminar.success", null, locale));
+			flash.addFlashAttribute("success",
+					messageSource.getMessage("text.cliente.flash.eliminar.success", null, locale));
 
 			if (uploadFileService.delete(cliente.getFoto())) {
-				String mensajeFotoEliminar = String.format(messageSource.getMessage("text.cliente.flash.foto.eliminar.success", null, locale), cliente.getFoto());
+				String mensajeFotoEliminar = String.format(
+						messageSource.getMessage("text.cliente.flash.foto.eliminar.success", null, locale),
+						cliente.getFoto());
 				flash.addFlashAttribute("info", mensajeFotoEliminar);
 			}
 
@@ -259,16 +280,16 @@ public class ClienteController {
 	// Roles de Usurio desde el Controller
 
 	private boolean hasRole(String role) {
-		
+
 		SecurityContext context = SecurityContextHolder.getContext();
 
-		if(context == null) {
+		if (context == null) {
 			return false;
 		}
-		
+
 		Authentication auth = context.getAuthentication();
-		
-		if(auth == null) {
+
+		if (auth == null) {
 			return false;
 		}
 
