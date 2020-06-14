@@ -23,6 +23,9 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -31,7 +34,7 @@ import io.swagger.annotations.ApiModelProperty;
 @Table(name = "clientes")
 @ApiModel("Entity cliente")
 public class Cliente implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -58,11 +61,19 @@ public class Cliente implements Serializable {
 	@Column(name = "create_at")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createAt;
-    
-	@OneToMany(mappedBy = "cliente" ,fetch = FetchType.LAZY, cascade = CascadeType.ALL)//carga perezoza solo realiza la consulta cuando  se le llama 
-	//cascade = CascadeType.ALL =>Todas las operaciones delete y persist  se  realizan ne cadena 
-	//mappedBy = "cliente" => Hace que sea bidireccional  un cliente tiene una lista de facturas pero la factura solo un cliente 
+
+	@OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	// carga perezoza solo realiza
+	// la consulta cuando se le
+	// llama
+	// cascade = CascadeType.ALL =>Todas las operaciones delete y persist se
+	// realizan ne cadena
+	// mappedBy = "cliente" => Hace que sea bidireccional un cliente tiene una lista
+	// de facturas pero la factura solo un cliente
+
+	@JsonManagedReference
 	private List<Factura> facturas;
 
 	public Cliente() {
@@ -142,8 +153,7 @@ public class Cliente implements Serializable {
 
 	@Override
 	public String toString() {
-		return nombre +" " + apellido ;
+		return nombre + " " + apellido;
 	}
-	
-	
+
 }

@@ -22,7 +22,8 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import javax.xml.bind.annotation.XmlTransient;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "facturas")
@@ -37,9 +38,11 @@ public class Factura implements Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "create_at")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createAt;
 
 	@ManyToOne(fetch = FetchType.LAZY) // carga perezoza solo realiza la consulta cuando se le llama
+	@JsonBackReference
 	private Cliente cliente;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -48,6 +51,7 @@ public class Factura implements Serializable {
 	@JoinColumn(name = "factura_id")
 	// JoinColumn //Indicamos que la relacion es en un solo sentido a la clave
 	// foranea
+
 	private List<ItemFactura> items;
 
 	public Factura() {
