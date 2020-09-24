@@ -12,7 +12,7 @@
 	<groupId>com.maudev.springboot.datajpa.app</groupId>
 	<artifactId>spring-boot-data-jpa</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-boot-data-jpa</name>
+	<name>WebAppJava-Spring-Boot</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
